@@ -225,7 +225,7 @@
 // <0x87=> EndpointAddress = 0x87
 // <id> usb_cdcd_acm_epaddr
 #ifndef CONF_USB_CDCD_ACM_COMM_INT_EPADDR
-#define CONF_USB_CDCD_ACM_COMM_INT_EPADDR 0x82
+#define CONF_USB_CDCD_ACM_COMM_INT_EPADDR 0x83
 #endif
 
 // <o> Interrupt IN Endpoint wMaxPacketSize
@@ -310,7 +310,7 @@
 // <0x07=> EndpointAddress = 0x07
 // <id> usb_cdcd_acm_data_bulkout_epaddr
 #ifndef CONF_USB_CDCD_ACM_DATA_BULKOUT_EPADDR
-#define CONF_USB_CDCD_ACM_DATA_BULKOUT_EPADDR 0x1
+#define CONF_USB_CDCD_ACM_DATA_BULKOUT_EPADDR 0x2
 #endif
 
 // <o> BULK OUT Endpoint wMaxPacketSize
