@@ -1,0 +1,4 @@
+MCU_SERIES = SAME70
+CMSIS_MCU = SAME70N21B
+LD_FILES = boards/same70n21b.ld sections.ld
+TEXT0 = 0x4000
