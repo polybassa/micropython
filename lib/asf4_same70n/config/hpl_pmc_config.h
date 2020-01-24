@@ -428,7 +428,7 @@
 // <i> Select the clock prescaler (prescaler = PRESC + 1).
 // <id> pck1_presc
 #ifndef CONF_PCK1_PRESC
-#define CONF_PCK1_PRESC 1
+#define CONF_PCK1_PRESC 2
 #endif
 
 // </h>
@@ -473,7 +473,7 @@
 // <i> Select the clock prescaler (prescaler = PRESC + 1).
 // <id> pck2_presc
 #ifndef CONF_PCK2_PRESC
-#define CONF_PCK2_PRESC 1
+#define CONF_PCK2_PRESC 3
 #endif
 
 // </h>
@@ -518,7 +518,7 @@
 // <i> Select the clock prescaler (prescaler = PRESC + 1).
 // <id> pck3_presc
 #ifndef CONF_PCK3_PRESC
-#define CONF_PCK3_PRESC 1
+#define CONF_PCK3_PRESC 4
 #endif
 
 // </h>
@@ -563,7 +563,7 @@
 // <i> Select the clock prescaler (prescaler = PRESC + 1).
 // <id> pck4_presc
 #ifndef CONF_PCK4_PRESC
-#define CONF_PCK4_PRESC 1
+#define CONF_PCK4_PRESC 5
 #endif
 
 // </h>
@@ -608,7 +608,7 @@
 // <i> Select the clock prescaler (prescaler = PRESC + 1).
 // <id> pck5_presc
 #ifndef CONF_PCK5_PRESC
-#define CONF_PCK5_PRESC 1
+#define CONF_PCK5_PRESC 6
 #endif
 
 // </h>
@@ -653,7 +653,7 @@
 // <i> Select the clock prescaler (prescaler = PRESC + 1).
 // <id> pck6_presc
 #ifndef CONF_PCK6_PRESC
-#define CONF_PCK6_PRESC 1
+#define CONF_PCK6_PRESC 7
 #endif
 
 // </h>
@@ -697,14 +697,14 @@
 // <i> This defines the clock source for USB_48M
 // <id> clk_gen_usb_48m_oscillator
 #ifndef CONF_CLK_GEN_USB_48M_SRC
-#define CONF_CLK_GEN_USB_48M_SRC CLK_SRC_OPTION_PLLACK
+#define CONF_CLK_GEN_USB_48M_SRC CLK_SRC_OPTION_UPLLCKDIV
 #endif
 
 // <q> Enable Clock_USB_48M
 // <i> Indicates whether USB_48M is enabled or disable
 // <id> clk_gen_usb_48m_arch_enable
 #ifndef CONF_CLK_USB_48M_ENABLE
-#define CONF_CLK_USB_48M_ENABLE 0
+#define CONF_CLK_USB_48M_ENABLE 1
 #endif
 
 // </h>
@@ -715,7 +715,7 @@
 // <i> Select the USB clock divider (divider = USBDIV + 1).
 // <id> usb_48m_div
 #ifndef CONF_USB_48M_DIV
-#define CONF_USB_48M_DIV 1
+#define CONF_USB_48M_DIV 5
 #endif
 
 // </h>
@@ -771,7 +771,7 @@
 // <i> This field defines the number of wait states for read and write operations.
 // <id> efc_fws
 #ifndef CONF_EFC_WAIT_STATE
-#define CONF_EFC_WAIT_STATE 6
+#define CONF_EFC_WAIT_STATE 5
 #endif
 
 // </h>
@@ -813,7 +813,7 @@
 // <i> Indicates whether OSC32K Oscillator is enabled or not
 // <id> osc32k_arch_enable
 #ifndef CONF_OSC32K_ENABLE
-#define CONF_OSC32K_ENABLE 1
+#define CONF_OSC32K_ENABLE 0
 #endif
 // </h>
 // </e>
@@ -954,7 +954,7 @@
 // <i> Indicates whether configuration for UPLLCK is enabled or not
 // <id> enable_upllck
 #ifndef CONF_UPLLCK_CONFIG
-#define CONF_UPLLCK_CONFIG 0
+#define CONF_UPLLCK_CONFIG 1
 #endif
 
 // <y> UPLLCK Reference Clock Source
@@ -970,7 +970,7 @@
 // <i> Indicates whether UPLLCK Oscillator is enabled or not
 // <id> upllck_arch_enable
 #ifndef CONF_UPLLCK_ENABLE
-#define CONF_UPLLCK_ENABLE 0
+#define CONF_UPLLCK_ENABLE 1
 #endif
 // </h>
 // </e>

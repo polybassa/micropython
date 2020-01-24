@@ -32,7 +32,7 @@
  * \def CONF_SLCK_FREQUENCY
  * \brief Slow Clock frequency
  */
-#define CONF_SLCK_FREQUENCY 32000
+#define CONF_SLCK_FREQUENCY 0
 
 /**
  * \def CONF_MCK_FREQUENCY
@@ -64,6 +64,7 @@
 #ifndef CONF_UART0_FREQUENCY
 #define CONF_UART0_FREQUENCY 150000000
 #endif
+#define CONF_PCK6_FREQUENCY 1714285
 
 #ifndef CONF_SRC_USB_480M
 #define CONF_SRC_USB_480M 0
@@ -99,7 +100,7 @@
  * \brief USBHS's Full/Low Speed Clock Source frequency
  */
 #ifndef CONF_USBHS_FSLS_FREQUENCY
-#define CONF_USBHS_FSLS_FREQUENCY 300000000
+#define CONF_USBHS_FSLS_FREQUENCY 48000000
 #endif
 
 /**
