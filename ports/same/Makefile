@@ -51,7 +51,7 @@ INC += -I$(LIB_DIR)/usb/device
 
 
 CFLAGS_MCU_SAME70 = -mtune=cortex-m7 -mcpu=cortex-m7 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-CFLAGS = $(INC) -Wall -Werror -std=gnu99 -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion
+CFLAGS = $(INC) -Wall -std=c99 -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion --specs=nano.specs -pedantic
 CFLAGS += -DMCU_$(MCU_SERIES) -D__$(CMSIS_MCU)__
 LDFLAGS = $(addprefix -T,$(LD_FILES)) -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
@@ -73,6 +73,7 @@ SRC_C = \
 	modmachine.c \
 	mphalport.c \
 	same_isr.c \
+	RingBuf.c \
 	usb_micropython.c \
 	lib/libc/string0.c \
 	lib/libm/ef_sqrt.c \
@@ -83,32 +84,40 @@ SRC_C = \
 	lib/utils/printf.c \
 	lib/utils/pyexec.c \
 	lib/utils/stdout_helpers.c \
-	$(LIB_PATH)/atmel_start.c \
-	$(LIB_PATH)/driver_init.c \
-	$(LIB_PATH)/examples/driver_examples.c \
-	$(LIB_PATH)/hal/src/hal_atomic.c \
-	$(LIB_PATH)/hal/src/hal_delay.c \
-	$(LIB_PATH)/hal/src/hal_gpio.c \
-	$(LIB_PATH)/hal/src/hal_init.c \
-	$(LIB_PATH)/hal/src/hal_io.c \
-	$(LIB_PATH)/hal/src/hal_sleep.c \
-	$(LIB_PATH)/hal/src/hal_usb_device.c \
-	$(LIB_PATH)/hal/utils/src/utils_assert.c \
-	$(LIB_PATH)/hal/utils/src/utils_event.c \
-	$(LIB_PATH)/hal/utils/src/utils_list.c \
-	$(LIB_PATH)/hal/utils/src/utils_ringbuffer.c \
-	$(LIB_PATH)/hal/utils/src/utils_syscalls.c \
-	$(LIB_PATH)/hpl/core/hpl_core_m7_base.c \
-	$(LIB_PATH)/hpl/core/hpl_init.c \
-	$(LIB_PATH)/hpl/pmc/hpl_pmc.c \
-	$(LIB_PATH)/hpl/pmc/hpl_sleep.c \
-	$(LIB_PATH)/hpl/usbhs/hpl_usbhs.c \
-	$(LIB_PATH)/hpl/xdmac/hpl_xdmac.c \
-	$(LIB_PATH)/same70b/gcc/gcc/startup_same70n21b.c \
-	$(LIB_PATH)/same70b/gcc/system_same70n21b.c \
-	$(LIB_PATH)/usb/class/cdc/device/cdcdf_acm.c \
-	$(LIB_PATH)/usb/device/usbdc.c \
-	$(LIB_PATH)/usb/usb_protocol.c 
+	$(LIB_PATH)/atmel_start.o \
+	$(LIB_PATH)/driver_init.o \
+	$(LIB_PATH)/examples/driver_examples.o \
+	$(LIB_PATH)/hal/src/hal_atomic.o \
+	$(LIB_PATH)/hal/src/hal_can_async.o \
+	$(LIB_PATH)/hal/src/hal_delay.o \
+	$(LIB_PATH)/hal/src/hal_gpio.o \
+	$(LIB_PATH)/hal/src/hal_init.o \
+	$(LIB_PATH)/hal/src/hal_io.o \
+	$(LIB_PATH)/hal/src/hal_sleep.o \
+	$(LIB_PATH)/hal/src/hal_usart_sync.o \
+	$(LIB_PATH)/hal/src/hal_usb_device.o \
+	$(LIB_PATH)/hal/utils/src/utils_assert.o \
+	$(LIB_PATH)/hal/utils/src/utils_event.o \
+	$(LIB_PATH)/hal/utils/src/utils_list.o \
+	$(LIB_PATH)/hal/utils/src/utils_ringbuffer.o \
+	$(LIB_PATH)/hal/utils/src/utils_syscalls.o \
+	$(LIB_PATH)/hpl/core/hpl_core_m7_base.o \
+	$(LIB_PATH)/hpl/core/hpl_init.o \
+	$(LIB_PATH)/hpl/mcan/hpl_mcan.o \
+	$(LIB_PATH)/hpl/pmc/hpl_pmc.o \
+	$(LIB_PATH)/hpl/pmc/hpl_sleep.o \
+	$(LIB_PATH)/hpl/uart/hpl_uart.o \
+	$(LIB_PATH)/hpl/usbhs/hpl_usbhs.o \
+	$(LIB_PATH)/hpl/xdmac/hpl_xdmac.o \
+	$(LIB_PATH)/same70b/gcc/gcc/startup_same70n21b.o \
+	$(LIB_PATH)/same70b/gcc/system_same70n21b.o \
+	$(LIB_PATH)/usb/class/cdc/device/cdcdf_acm.o \
+	$(LIB_PATH)/usb/device/usbdc.o \
+	$(LIB_PATH)/usb/usb_protocol.o 
+
+
+
+SRC_S = lib/utils/gchelper_m3.s 
 
 
 # List of sources for qstr extraction
@@ -118,7 +127,7 @@ OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_S:.s=.o))
 
-all: $(BUILD)/firmware.uf2
+all: $(BUILD)/firmware.uf2 $(BUILD)/firmware.hex
 
 $(BUILD)/firmware.elf: $(OBJ)
 	$(ECHO) "LINK $@"
@@ -127,6 +136,9 @@ $(BUILD)/firmware.elf: $(OBJ)
 
 $(BUILD)/firmware.bin: $(BUILD)/firmware.elf
 	$(Q)$(OBJCOPY) -O binary -j .isr_vector -j .text -j .data $^ $(BUILD)/firmware.bin
+
+$(BUILD)/firmware.hex: $(BUILD)/firmware.elf
+	$(Q)$(OBJCOPY) -O ihex -R .eeprom -R .fuse -R .lock -R .signature $^ $(BUILD)/firmware.hex
 
 $(BUILD)/firmware.uf2: $(BUILD)/firmware.bin
 	$(Q)$(PYTHON) $(UF2CONV) -b $(TEXT0) -c -o $@ $<

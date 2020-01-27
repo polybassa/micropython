@@ -1,7 +1,7 @@
-Port of MicroPython to Microchip SAMD MCUs
+Port of MicroPython to Microchip SAME MCUs
 ==========================================
 
-Supports SAMD21 and SAMD51.
+Supports SAME70
 
 Features:
 - REPL over USB VCP

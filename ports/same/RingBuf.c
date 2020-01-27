@@ -26,7 +26,7 @@ uint8_t RingBuf_Get(struct RingBuffer* pBuf)
     uint8_t read = pBuf->read;
     uint8_t result = pBuf->data[read];
     pBuf->read = RingBufInc(read);
-    pBuf->error_full = FALSE;
+    pBuf->error_full = 0;
     return result;
 }
 

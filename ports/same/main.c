@@ -34,6 +34,10 @@
 #include "atmel_start.h"
 #include "usb_micropython.h"
 
+void __libc_init_array(void) {
+}
+
+
 extern uint8_t _sstack, _estack, _sheap, _eheap;
 
 int main(void) {
