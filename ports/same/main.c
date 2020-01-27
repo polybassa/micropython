@@ -32,13 +32,14 @@
 #include "lib/utils/gchelper.h"
 #include "lib/utils/pyexec.h"
 #include "atmel_start.h"
+#include "usb_micropython.h"
 
 extern uint8_t _sstack, _estack, _sheap, _eheap;
 
 int main(void) {
    atmel_start_init();
 
-	cdcd_acm_example();
+   cdcd_acm_micropython();
 
     mp_stack_set_top(&_estack);
     mp_stack_set_limit(&_estack - &_sstack - 1024);

@@ -24,6 +24,8 @@
  * THE SOFTWARE.
  */
 
+#include "atmel_start.h"
+
 uint32_t systick_ms;
 
 void SysTick_Handler(void) {

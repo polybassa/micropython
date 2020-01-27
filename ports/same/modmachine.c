@@ -26,13 +26,13 @@
 
 #include "py/runtime.h"
 #include "extmod/machine_mem.h"
+#include "atmel_start.h"
 
 #define DBL_TAP_ADDR ((volatile uint32_t *)(0x20000000 + 384 * 1024 - 4))
 #define DBL_TAP_MAGIC_LOADER 0xf01669ef
 #define DBL_TAP_MAGIC_RESET 0xf02669ef
 
 #define CPU_FREQ 300000000
-#define NVIC_SystemReset(x)
 
 STATIC mp_obj_t machine_reset(void) {
     *DBL_TAP_ADDR = DBL_TAP_MAGIC_RESET;

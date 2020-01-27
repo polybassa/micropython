@@ -21,37 +21,42 @@ include $(TOP)/py/py.mk
 
 GIT_SUBMODULES = lib/asf4
 
+LIB_PATH ?= lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')
+LIB_DIR ?= $(TOP)/$(LIB_PATH)
+
 INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
 INC += -I$(BOARD_DIR)
 INC += -I$(TOP)/lib/cmsis/inc
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/CMSIS/Core/Include
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/config
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/examples
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hal/include
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hal/utils/include
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/core
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/mcan
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/pio
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/pmc
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/uart
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/usbhs
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hpl/xdmac
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/hri
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/same70b/include
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/usb
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/usb/class/cdc
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/usb/class/cdc/device
-INC += -I$(TOP)/lib/asf4/$(shell echo $(MCU_SERIES) | tr '[:upper:]' '[:lower:]')/usb/device
+INC += -I$(LIB_DIR)/
+INC += -I$(LIB_DIR)/CMSIS/Core/Include
+INC += -I$(LIB_DIR)/config
+INC += -I$(LIB_DIR)/examples
+INC += -I$(LIB_DIR)/hal/include
+INC += -I$(LIB_DIR)/hal/utils/include
+INC += -I$(LIB_DIR)/hpl/core
+INC += -I$(LIB_DIR)/hpl/mcan
+INC += -I$(LIB_DIR)/hpl/pio
+INC += -I$(LIB_DIR)/hpl/pmc
+INC += -I$(LIB_DIR)/hpl/uart
+INC += -I$(LIB_DIR)/hpl/usbhs
+INC += -I$(LIB_DIR)/hpl/xdmac
+INC += -I$(LIB_DIR)/hri
+INC += -I$(LIB_DIR)/same70b/include
+INC += -I$(LIB_DIR)/usb
+INC += -I$(LIB_DIR)/usb/class/cdc
+INC += -I$(LIB_DIR)/usb/class/cdc/device
+INC += -I$(LIB_DIR)/usb/device
 
 
 CFLAGS_MCU_SAME70 = -mtune=cortex-m7 -mcpu=cortex-m7 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion
+CFLAGS = $(INC) -Wall -Werror -std=gnu99 -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion
 CFLAGS += -DMCU_$(MCU_SERIES) -D__$(CMSIS_MCU)__
-LDFLAGS = -nostdlib $(addprefix -T,$(LD_FILES)) -Map=$@.map --cref
+LDFLAGS = $(addprefix -T,$(LD_FILES)) -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+
+DEBUG = 1
 
 # Tune for Debugging or Optimization
 ifeq ($(DEBUG),1)
@@ -68,6 +73,7 @@ SRC_C = \
 	modmachine.c \
 	mphalport.c \
 	same_isr.c \
+	usb_micropython.c \
 	lib/libc/string0.c \
 	lib/libm/ef_sqrt.c \
 	lib/libm/fmodf.c \
@@ -77,7 +83,33 @@ SRC_C = \
 	lib/utils/printf.c \
 	lib/utils/pyexec.c \
 	lib/utils/stdout_helpers.c \
-	lib/utils/gchelper_m7.s
+	$(LIB_PATH)/atmel_start.c \
+	$(LIB_PATH)/driver_init.c \
+	$(LIB_PATH)/examples/driver_examples.c \
+	$(LIB_PATH)/hal/src/hal_atomic.c \
+	$(LIB_PATH)/hal/src/hal_delay.c \
+	$(LIB_PATH)/hal/src/hal_gpio.c \
+	$(LIB_PATH)/hal/src/hal_init.c \
+	$(LIB_PATH)/hal/src/hal_io.c \
+	$(LIB_PATH)/hal/src/hal_sleep.c \
+	$(LIB_PATH)/hal/src/hal_usb_device.c \
+	$(LIB_PATH)/hal/utils/src/utils_assert.c \
+	$(LIB_PATH)/hal/utils/src/utils_event.c \
+	$(LIB_PATH)/hal/utils/src/utils_list.c \
+	$(LIB_PATH)/hal/utils/src/utils_ringbuffer.c \
+	$(LIB_PATH)/hal/utils/src/utils_syscalls.c \
+	$(LIB_PATH)/hpl/core/hpl_core_m7_base.c \
+	$(LIB_PATH)/hpl/core/hpl_init.c \
+	$(LIB_PATH)/hpl/pmc/hpl_pmc.c \
+	$(LIB_PATH)/hpl/pmc/hpl_sleep.c \
+	$(LIB_PATH)/hpl/usbhs/hpl_usbhs.c \
+	$(LIB_PATH)/hpl/xdmac/hpl_xdmac.c \
+	$(LIB_PATH)/same70b/gcc/gcc/startup_same70n21b.c \
+	$(LIB_PATH)/same70b/gcc/system_same70n21b.c \
+	$(LIB_PATH)/usb/class/cdc/device/cdcdf_acm.c \
+	$(LIB_PATH)/usb/device/usbdc.c \
+	$(LIB_PATH)/usb/usb_protocol.c 
+
 
 # List of sources for qstr extraction
 SRC_QSTR += modutime.c modmachine.c
