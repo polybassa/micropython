@@ -17,12 +17,10 @@ static uint8_t single_desc_bytes[] = {
 static uint8_t single_desc_bytes_hs[] = {
     /* Device descriptors and Configuration descriptors list. */
     CDCD_ACM_HS_DESCES_HS};
-#define CDCD_ECHO_BUF_SIZ CONF_USB_CDCD_ACM_DATA_BULKIN_MAXPKSZ_HS
 #else
 static uint8_t single_desc_bytes[] = {
     /* Device descriptors and Configuration descriptors list. */
     CDCD_ACM_DESCES_LS_FS};
-#define CDCD_ECHO_BUF_SIZ CONF_USB_CDCD_ACM_DATA_BULKIN_MAXPKSZ
 #endif
 
 static struct usbd_descriptors single_desc[]
@@ -34,15 +32,17 @@ static struct usbd_descriptors single_desc[]
 };
 
 /** Buffers to receive and echo the communication bytes. */
-static uint8_t usbd_cdc_buffer_out[CDCD_ECHO_BUF_SIZ];
-static uint8_t usbd_cdc_buffer_in[CDCD_ECHO_BUF_SIZ];
+volatile uint8_t usbd_cdc_buffer_out[CDCD_ECHO_BUF_SIZ];
+volatile uint8_t usbd_cdc_buffer_in[CDCD_ECHO_BUF_SIZ];
 
 
 /** Ctrl endpoint buffer */
 static uint8_t ctrl_buffer[64];
 
-struct RingBuffer rbuf_in;
-struct RingBuffer rbuf_out;
+volatile struct RingBuffer rbuf_in;
+volatile struct RingBuffer rbuf_out;
+volatile uint8_t read_done;
+volatile uint8_t send_done;
 
 /**
  * \brief Callback invoked when bulk OUT data received
@@ -50,8 +50,9 @@ struct RingBuffer rbuf_out;
 static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
 {
 	uint32_t idx = 0;
-	while(!RingBuf_IsEmpty(&rbuf_out) && idx < count) {
-		usbd_cdc_buffer_out[idx++] = RingBuf_Get(&rbuf_out);
+	while(!RingBuf_IsEmpty(&rbuf_out)) {
+		usbd_cdc_buffer_out[idx] = RingBuf_Get(&rbuf_out);
+		idx++;
 	}
 
 	cdcdf_acm_write(usbd_cdc_buffer_out, idx);
@@ -65,16 +66,14 @@ static bool usb_device_cb_bulk_out(const uint8_t ep, const enum usb_xfer_code rc
  */
 static bool usb_device_cb_bulk_in(const uint8_t ep, const enum usb_xfer_code rc, const uint32_t count)
 {
-
-
+	
 	uint32_t idx = 0;
 	while(idx < count){
 		RingBuf_Put(&rbuf_in, usbd_cdc_buffer_in[idx++]);
 	}
-
+	read_done=1;
 	/* Echo data. */
-	cdcdf_acm_read(usbd_cdc_buffer_in, sizeof(usbd_cdc_buffer_in));
-
+	//cdcdf_acm_read(usbd_cdc_buffer_in, 1);
 	/* No error. */
 	return 0;
 }
@@ -89,7 +88,7 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_device_cb_bulk_out);
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_WRITE, (FUNC_PTR)usb_device_cb_bulk_in);
 		/* Start Rx */
-		cdcdf_acm_read(usbd_cdc_buffer_in, sizeof(usbd_cdc_buffer_in));
+		cdcdf_acm_read(usbd_cdc_buffer_in, 1);
 	}
 
 	/* No error. */
@@ -101,6 +100,8 @@ static bool usb_device_cb_state_c(usb_cdc_control_signal_t state)
  */
 void cdc_device_acm_init(void)
 {
+	read_done = 0;
+	send_done = 0;
 	/* usb stack init */
 	usbdc_init(ctrl_buffer);
 

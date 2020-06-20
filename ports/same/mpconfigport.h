@@ -41,7 +41,7 @@
 
 // Python internal features
 #define MICROPY_ENABLE_GC                   (1)
-#define MICROPY_KBD_EXCEPTION               (1)
+#define MICROPY_KBD_EXCEPTION               (0)
 #define MICROPY_HELPER_REPL                 (1)
 #define MICROPY_LONGINT_IMPL                (MICROPY_LONGINT_IMPL_MPZ)
 #define MICROPY_ENABLE_SOURCE_LINE          (1)
@@ -50,21 +50,21 @@
 #define MICROPY_CAN_OVERRIDE_BUILTINS       (1)
 
 // Control over Python builtins
-#define MICROPY_PY_ASYNC_AWAIT              (0)
-#define MICROPY_PY_BUILTINS_STR_COUNT       (0)
+#define MICROPY_PY_ASYNC_AWAIT              (1)
+#define MICROPY_PY_BUILTINS_STR_COUNT       (1)
 #define MICROPY_PY_BUILTINS_MEMORYVIEW      (1)
-#define MICROPY_PY_BUILTINS_SET             (0)
-#define MICROPY_PY_BUILTINS_FROZENSET       (0)
-#define MICROPY_PY_BUILTINS_PROPERTY        (0)
-#define MICROPY_PY_BUILTINS_ENUMERATE       (0)
-#define MICROPY_PY_BUILTINS_FILTER          (0)
-#define MICROPY_PY_BUILTINS_REVERSED        (0)
-#define MICROPY_PY_BUILTINS_MIN_MAX         (0)
-#define MICROPY_PY___FILE__                 (0)
+#define MICROPY_PY_BUILTINS_SET             (1)
+#define MICROPY_PY_BUILTINS_FROZENSET       (1)
+#define MICROPY_PY_BUILTINS_PROPERTY        (1)
+#define MICROPY_PY_BUILTINS_ENUMERATE       (1)
+#define MICROPY_PY_BUILTINS_FILTER          (1)
+#define MICROPY_PY_BUILTINS_REVERSED        (1)
+#define MICROPY_PY_BUILTINS_MIN_MAX         (1)
+#define MICROPY_PY___FILE__                 (1)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO     (1)
 #define MICROPY_PY_ARRAY_SLICE_ASSIGN       (1)
-#define MICROPY_PY_ATTRTUPLE                (0)
-#define MICROPY_PY_COLLECTIONS              (0)
+#define MICROPY_PY_ATTRTUPLE                (1)
+#define MICROPY_PY_COLLECTIONS              (1)
 #define MICROPY_PY_SYS_MAXSIZE              (1)
 
 // Extended modules

@@ -51,7 +51,7 @@ INC += -I$(LIB_DIR)/usb/device
 
 
 CFLAGS_MCU_SAME70 = -mtune=cortex-m7 -mcpu=cortex-m7 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-CFLAGS = $(INC) -Wall -std=c99 -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion --specs=nano.specs -pedantic
+CFLAGS = $(INC) -Wall -std=c99 -mthumb $(CFLAGS_MCU_$(MCU_SERIES)) -fsingle-precision-constant -Wdouble-promotion --specs=nano.specs 
 CFLAGS += -DMCU_$(MCU_SERIES) -D__$(CMSIS_MCU)__
 LDFLAGS = $(addprefix -T,$(LD_FILES)) -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)

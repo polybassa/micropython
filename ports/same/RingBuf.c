@@ -14,14 +14,14 @@
 
 #include "RingBuf.h"
 
-void RingBuf_Init(struct RingBuffer* pBuf)
+void RingBuf_Init(volatile struct RingBuffer* pBuf)
 {
     pBuf->read = 0;
     pBuf->write = 0;
     pBuf->error_full = 0;
 }
 
-uint8_t RingBuf_Get(struct RingBuffer* pBuf)
+uint8_t RingBuf_Get(volatile struct RingBuffer* pBuf)
 {
     uint8_t read = pBuf->read;
     uint8_t result = pBuf->data[read];
@@ -30,7 +30,7 @@ uint8_t RingBuf_Get(struct RingBuffer* pBuf)
     return result;
 }
 
-void RingBuf_Put(struct RingBuffer* pBuf, const uint8_t value)
+void RingBuf_Put(volatile struct RingBuffer* pBuf, const uint8_t value)
 {
     uint8_t writeNext = RingBufInc(pBuf->write);
     if (writeNext != pBuf->read) {
@@ -40,12 +40,12 @@ void RingBuf_Put(struct RingBuffer* pBuf, const uint8_t value)
     } else {pBuf->error_full = 1; }
 }
 
-uint8_t RingBuf_HasError(struct RingBuffer* pBuf)
+uint8_t RingBuf_HasError(volatile struct RingBuffer* pBuf)
 {
     return pBuf->error_full;
 }
 
-uint8_t RingBuf_IsEmpty(const struct RingBuffer* pBuf)
+uint8_t RingBuf_IsEmpty(const volatile struct RingBuffer* pBuf)
 {
     uint8_t write = pBuf->write;
     uint8_t read = pBuf->read;

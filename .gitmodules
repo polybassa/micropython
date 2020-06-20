@@ -23,7 +23,7 @@
 	url = https://github.com/ARMmbed/mbedtls.git
 [submodule "lib/asf4"]
 	path = lib/asf4
-	url = https://github.com/adafruit/asf4
+	url = https://github.com/polybassa/asf4
 [submodule "lib/tinyusb"]
 	path = lib/tinyusb
 	url = https://github.com/hathach/tinyusb

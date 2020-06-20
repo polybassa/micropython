@@ -45,13 +45,13 @@ struct RingBuffer {
  */
 #define RingBufInc(x) ((x + 1) & RingBufferSize)
 
-uint8_t RingBuf_HasError(struct RingBuffer* pBuf);
-uint8_t RingBuf_IsEmpty(const struct RingBuffer* pBuf);
+uint8_t RingBuf_HasError(volatile struct RingBuffer* pBuf);
+uint8_t RingBuf_IsEmpty(const volatile struct RingBuffer* pBuf);
 
 /**
  * Initialize the ring buffer and all associated variables
  */
-void RingBuf_Init(struct RingBuffer* pBuf);
+void RingBuf_Init(volatile struct RingBuffer* pBuf);
 
 /**
  * This function will increment the read pointer of the
@@ -59,7 +59,7 @@ void RingBuf_Init(struct RingBuffer* pBuf);
  * WARNING: never call this function on an empty buffer!
  * Test with <RingBufIsNotEmpty> for data first!
  */
-uint8_t RingBuf_Get(struct RingBuffer* pBuf);
+uint8_t RingBuf_Get(volatile struct RingBuffer* pBuf);
 
 /**
  * If the buffer is not full, value is added to the ring
@@ -68,7 +68,7 @@ uint8_t RingBuf_Get(struct RingBuffer* pBuf);
  *
  * If the buffer is already full, <g_error_ringbuff> is set.
  */
-void RingBuf_Put(struct RingBuffer* pBuf, const uint8_t value);
+void RingBuf_Put(volatile struct RingBuffer* pBuf, const uint8_t value);
 
 #ifdef __cplusplus
 }

@@ -16,11 +16,26 @@ extern "C" {
 #include "cdcdf_acm_desc.h"
 #include "RingBuf.h"
 
+#if CONF_USBD_HS_SP
+#define CDCD_ECHO_BUF_SIZ CONF_USB_CDCD_ACM_DATA_BULKIN_MAXPKSZ_HS
+#else
+#define CDCD_ECHO_BUF_SIZ CONF_USB_CDCD_ACM_DATA_BULKIN_MAXPKSZ
+#endif
+
+
+
 void cdcd_acm_micropython(void);
 void cdc_device_acm_init(void);
 
-extern struct RingBuffer rbuf_in;
-extern struct RingBuffer rbuf_out;
+extern volatile struct RingBuffer rbuf_in;
+extern volatile struct RingBuffer rbuf_out;
+
+extern volatile uint8_t read_done;
+extern volatile uint8_t send_done;
+
+extern volatile uint8_t usbd_cdc_buffer_out[CDCD_ECHO_BUF_SIZ];
+extern volatile uint8_t usbd_cdc_buffer_in[CDCD_ECHO_BUF_SIZ];
+
 
 /**
  * \berif Initialize USB
